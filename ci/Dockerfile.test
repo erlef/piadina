@@ -1,0 +1,9 @@
+FROM ubuntu:22.04
+
+ENV WORKDIR=/work
+ENV PIADINA_SRC=$WORKDIR/piadina
+ENV AZDORA_SRC=$WORKDIR/azdora
+
+WORKDIR $WORKDIR
+
+CMD ["/bin/bash"]

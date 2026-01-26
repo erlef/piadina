@@ -1,0 +1,58 @@
+name: Release
+
+on:
+    release:
+        types: [created]
+
+permissions:
+    contents: write
+    id-token: write
+    attestations: write
+
+jobs:
+    build-amd64:
+        uses: ./.github/workflows/generate_binaries_linux.yml
+        with:
+            arch: amd64
+            attest: true
+
+    build-arm64:
+        uses: ./.github/workflows/generate_binaries_linux.yml
+        with:
+            arch: arm64
+            attest: true
+
+    publish:
+        needs: [build-amd64, build-arm64]
+        runs-on: ubuntu-latest
+        env:
+            RELEASE_TAG: ${{ github.event.release.tag_name || github.ref_name }}
+        steps:
+            - uses: actions/checkout@v4
+
+            - name: Download piadina binaries
+              uses: actions/download-artifact@v4
+              with:
+                pattern: piadina-*
+                path: dist
+
+            - name: Download azdora binaries
+              uses: actions/download-artifact@v4
+              with:
+                pattern: azdora-*
+                path: dist
+
+            - name: Upload assets to GitHub Release
+              uses: softprops/action-gh-release@v2
+              with:
+                tag_name: ${{ env.RELEASE_TAG }}
+                name: ${{ env.RELEASE_TAG }}
+                files: |
+                  dist/piadina-linux-amd64/piadina
+                  dist/piadina-linux-amd64/piadina.sha256
+                  dist/piadina-linux-arm64/piadina
+                  dist/piadina-linux-arm64/piadina.sha256
+                  dist/azdora-linux-amd64/azdora
+                  dist/azdora-linux-amd64/azdora.sha256
+                  dist/azdora-linux-arm64/azdora
+                  dist/azdora-linux-arm64/azdora.sha256
