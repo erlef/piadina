@@ -76,19 +76,21 @@ jobs:
         ./autogen.sh && \
         ./configure && \
         make -j$(nproc) && \
-        make check
+        make check && \
+        mv ${{ github.workspace }}/piadina/piadina ${{ github.workspace }}/piadina/piadina-linux-${{ inputs.arch }} && \
+        mv ${{ github.workspace }}/azdora/azdora ${{ github.workspace }}/azdora/azdora-linux-${{ inputs.arch }}
 
     - name: Compute checksums
       run: |
-        sha256sum ${{ github.workspace }}/piadina/piadina > ${{ github.workspace }}/piadina/piadina.sha256
-        sha256sum ${{ github.workspace }}/azdora/azdora > ${{ github.workspace }}/azdora/azdora.sha256
+        sha256sum ${{ github.workspace }}/piadina/piadina-linux-${{ inputs.arch }} > ${{ github.workspace }}/piadina/piadina-linux-${{ inputs.arch }}.sha256
+        sha256sum ${{ github.workspace }}/azdora/azdora-linux-${{ inputs.arch }} > ${{ github.workspace }}/azdora/azdora-linux-${{ inputs.arch }}.sha256
 
     - name: Attest build provenance of piadina
       if: ${{ inputs.attest }}
       uses: actions/attest-build-provenance@00014ed6ed5efc5b1ab7f7f34a39eb55d41aa4f8 # v3.1.0
       id: attest-provenance-piadina
       with:
-        subject-path: ${{ github.workspace }}/piadina/piadina
+        subject-path: ${{ github.workspace }}/piadina/piadina-linux-${{ inputs.arch }}
 
     - name: Export provenance bundle of piadina
       if: ${{ inputs.attest }}
@@ -96,14 +98,14 @@ jobs:
         ATT_BUNDLE: ${{ steps.attest-provenance-piadina.outputs.bundle-path }}
       run: |
         set -euo pipefail
-        cp "${{ env.ATT_BUNDLE }}" "${{ github.workspace }}/piadina/piadina.sigstore"
+        cp "${{ env.ATT_BUNDLE }}" "${{ github.workspace }}/piadina/piadina-linux-${{ inputs.arch }}.sigstore"
 
     - name: Attest build provenance of azdora
       if: ${{ inputs.attest }}
       uses: actions/attest-build-provenance@00014ed6ed5efc5b1ab7f7f34a39eb55d41aa4f8 # v3.1.0
       id: attest-provenance-azdora
       with:
-        subject-path: ${{ github.workspace }}/azdora/azdora
+        subject-path: ${{ github.workspace }}/azdora/azdora-linux-${{ inputs.arch }}
 
     - name: Export provenance bundle of azdora
       if: ${{ inputs.attest }}
@@ -111,22 +113,22 @@ jobs:
         ATT_BUNDLE: ${{ steps.attest-provenance-azdora.outputs.bundle-path }}
       run: |
         set -euo pipefail
-        cp "${{ env.ATT_BUNDLE }}" "${{ github.workspace }}/azdora/azdora.sigstore"
+        cp "${{ env.ATT_BUNDLE }}" "${{ github.workspace }}/azdora/azdora-linux-${{ inputs.arch }}.sigstore"
 
     - name: Upload piadina's binaries
       uses: actions/upload-artifact@v4
       with:
         name: piadina-linux-${{ inputs.arch }}
         path: |
-           ${{ github.workspace }}/piadina/piadina
-           ${{ github.workspace }}/piadina/piadina.sha256
-           ${{ github.workspace }}/piadina/piadina.sigstore
+           ${{ github.workspace }}/piadina/piadina-linux-${{ inputs.arch }}
+           ${{ github.workspace }}/piadina/piadina-linux-${{ inputs.arch }}.sha256
+           ${{ github.workspace }}/piadina/piadina-linux-${{ inputs.arch }}.sigstore
 
     - name: Upload azdora's binaries
       uses: actions/upload-artifact@v4
       with:
         name: azdora-linux-${{ inputs.arch }}
         path: |
-           ${{ github.workspace }}/azdora/azdora
-           ${{ github.workspace }}/azdora/azdora.sha256
-           ${{ github.workspace }}/azdora/azdora.sigstore
+           ${{ github.workspace }}/azdora/azdora-linux-${{ inputs.arch }}
+           ${{ github.workspace }}/azdora/azdora-linux-${{ inputs.arch }}.sha256
+           ${{ github.workspace }}/azdora/azdora-linux-${{ inputs.arch }}.sigstore

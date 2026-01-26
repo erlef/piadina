@@ -48,11 +48,15 @@ jobs:
                 tag_name: ${{ env.RELEASE_TAG }}
                 name: ${{ env.RELEASE_TAG }}
                 files: |
-                  dist/piadina-linux-amd64/piadina
-                  dist/piadina-linux-amd64/piadina.sha256
-                  dist/piadina-linux-arm64/piadina
-                  dist/piadina-linux-arm64/piadina.sha256
-                  dist/azdora-linux-amd64/azdora
-                  dist/azdora-linux-amd64/azdora.sha256
-                  dist/azdora-linux-arm64/azdora
-                  dist/azdora-linux-arm64/azdora.sha256
+                  dist/piadina-linux-amd64/piadina-linux-amd64
+                  dist/piadina-linux-amd64/piadina-linux-amd64.sha256
+                  dist/piadina-linux-amd64/piadina-linux-amd64.sigstore
+                  dist/piadina-linux-arm64/piadina-linux-arm64
+                  dist/piadina-linux-arm64/piadina-linux-arm64.sha256
+                  dist/piadina-linux-arm64/piadina-linux-arm64.sigstore
+                  dist/azdora-linux-amd64/azdora-linux-amd64
+                  dist/azdora-linux-amd64/azdora-linux-amd64.sha256
+                  dist/azdora-linux-amd64/azdora-linux-amd64.sigstore
+                  dist/azdora-linux-arm64/azdora-linux-arm64
+                  dist/azdora-linux-arm64/azdora-linux-arm64.sha256
+                  dist/azdora-linux-arm64/azdora-linux-arm64.sigstore

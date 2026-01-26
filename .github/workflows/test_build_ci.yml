@@ -2,6 +2,11 @@ name: Test build CI (linux amd64 + arm64)
 
 on:
   workflow_dispatch:
+    inputs:
+      attest:
+        type: boolean
+        description: Whether to attest the build provenance
+        default: false
   pull_request:
     branches:
       - "main"
@@ -11,8 +16,10 @@ jobs:
     uses: ./.github/workflows/generate_binaries_linux.yml
     with:
       arch: amd64
+      attest: ${{ inputs.attest || false }}
 
   build-arm64:
     uses: ./.github/workflows/generate_binaries_linux.yml
     with:
       arch: arm64
+      attest: ${{ inputs.attest || false }}
